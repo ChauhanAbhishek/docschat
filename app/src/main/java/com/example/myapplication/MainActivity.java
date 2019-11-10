@@ -3,6 +3,12 @@ package com.example.myapplication;
 import android.app.Activity;
 
 
+import android.content.BroadcastReceiver;
+import android.content.Context;
+import android.content.Intent;
+import android.content.IntentFilter;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
@@ -162,6 +168,37 @@ public class MainActivity extends AppCompatActivity {
                 ChatDatabase.getInstance(MainActivity.this).getChatDao().insertChat(chat);
             }
         });
+    }
+
+    private BroadcastReceiver networkStateReceiver=new BroadcastReceiver() {
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            ConnectivityManager manager = (ConnectivityManager) context.getSystemService(Context.CONNECTIVITY_SERVICE);
+            NetworkInfo networkInfo = manager.getActiveNetworkInfo();
+            Intent serviceIntent = new Intent(MainActivity.this, ChatJobIntentService.class);
+
+            Log.d("cnrr",networkInfo + "hi");
+
+            if(networkInfo!=null&&networkInfo.isConnected())
+            {
+                Log.d("cnrr","enqueue work");
+
+                ChatJobIntentService.enqueueWork(MainActivity.this,serviceIntent,123);
+
+            }
+        }
+    };
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        registerReceiver(networkStateReceiver, new IntentFilter(android.net.ConnectivityManager.CONNECTIVITY_ACTION));
+    }
+
+    @Override
+    public void onPause() {
+        unregisterReceiver(networkStateReceiver);
+        super.onPause();
     }
 
 

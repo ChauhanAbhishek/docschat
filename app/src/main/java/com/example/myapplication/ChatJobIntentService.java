@@ -42,16 +42,17 @@ public class ChatJobIntentService extends JobIntentService {
     @Override
     protected void onHandleWork(@NonNull Intent intent) {
 
+        Log.d("cnrr","on handle");
+
         for(Chat chat : chatDao.getAllUnsentChats())
         {
-            if(chat.isSentToServer()==0)
-            {
-                sendMessage(chat.getText(),chat.getPk());
-            }
+
+            sendMessage(chat.getText(),chat.getPk());
+
         }
     }
 
-    private void sendMessage(final String message,long pk) {
+    private void sendMessage( String message,final long pk) {
         AndroidNetworking.get(" https://www.personalityforge.com/api/chat/?apiKey=6nt5d1nJHkqbkphe&chatBotID=63906&externalID=chirag1")
                 .addPathParameter("message", message)
                 .addQueryParameter("message", message)
@@ -71,37 +72,37 @@ public class ChatJobIntentService extends JobIntentService {
                                 // chatAdapter.appendChats(new Chat(message, Chat.MINE,true, (int)(System.currentTimeMillis() / 1000) ));
                                 //   chatAdapter.appendChats(new Chat( response.getJSONObject("message").getString("message"), Chat.OTHERS,true, (int)(System.currentTimeMillis() / 1000) ));
 
-                                updateChat(new Chat(message, Chat.MINE,1, (int)(System.currentTimeMillis() / 1000) ));
+                                updateChat(pk);
                                 saveChat(new Chat(reply  , Chat.OTHERS,1, (int)(System.currentTimeMillis() / 1000) ));
 
                             }
                         }
                         catch (JSONException e)
                         {
-
+                            Log.d("cnrr",e.toString());
                         }
                     }
                     @Override
                     public void onError(ANError error) {
 
-
+                        Log.d("cnrr",error.toString());
                     }
                 });
 
 
     }
 
-    public void updateChat(final Chat chat)
+    public void updateChat(final long pk)
     {
         mDiskIO.execute(new Runnable() {
             @Override
             public void run() {
-                ChatDatabase.getInstance(ChatJobIntentService.this).getChatDao().updateChatAsSent(chat.getPk());
+                ChatDatabase.getInstance(ChatJobIntentService.this).getChatDao().updateChatAsSent(pk);
             }
         });
     }
 
-    public void saveChat(Chat chat)
+    public void saveChat(final Chat chat)
     {
         mDiskIO.execute(new Runnable() {
             @Override
