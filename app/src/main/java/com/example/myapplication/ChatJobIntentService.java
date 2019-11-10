@@ -52,10 +52,11 @@ public class ChatJobIntentService extends JobIntentService {
         }
     }
 
-    private void sendMessage( String message,final long pk) {
+    private void sendMessage(final String message, final long pk) {
         AndroidNetworking.get(" https://www.personalityforge.com/api/chat/?apiKey=6nt5d1nJHkqbkphe&chatBotID=63906&externalID=chirag1")
                 .addPathParameter("message", message)
                 .addQueryParameter("message", message)
+                .setTag(pk)
                 .setPriority(Priority.LOW)
                 .build()
                 .getAsJSONObject(new JSONObjectRequestListener() {
@@ -72,8 +73,7 @@ public class ChatJobIntentService extends JobIntentService {
                                 // chatAdapter.appendChats(new Chat(message, Chat.MINE,true, (int)(System.currentTimeMillis() / 1000) ));
                                 //   chatAdapter.appendChats(new Chat( response.getJSONObject("message").getString("message"), Chat.OTHERS,true, (int)(System.currentTimeMillis() / 1000) ));
 
-                                updateChat(pk);
-                                saveChat(new Chat(reply  , Chat.OTHERS,1, (int)(System.currentTimeMillis() / 1000) ));
+                                updateChat(pk,reply);
 
                             }
                         }
@@ -92,12 +92,18 @@ public class ChatJobIntentService extends JobIntentService {
 
     }
 
-    public void updateChat(final long pk)
+    public void updateChat(final long pk, final String message)
     {
         mDiskIO.execute(new Runnable() {
             @Override
             public void run() {
-                ChatDatabase.getInstance(ChatJobIntentService.this).getChatDao().updateChatAsSent(pk);
+                boolean isChatUpdated = ChatDatabase.getInstance(ChatJobIntentService.this).getChatDao().getChatStatus(pk).size()==0;
+                if(isChatUpdated)
+                {
+                    ChatDatabase.getInstance(ChatJobIntentService.this).getChatDao().insertChat(new Chat(message  , Chat.OTHERS,1, (int)(System.currentTimeMillis() / 1000) ));
+                    ChatDatabase.getInstance(ChatJobIntentService.this).getChatDao().updateChatAsSent(pk);
+                }
+
             }
         });
     }
@@ -107,7 +113,7 @@ public class ChatJobIntentService extends JobIntentService {
         mDiskIO.execute(new Runnable() {
             @Override
             public void run() {
-                ChatDatabase.getInstance(ChatJobIntentService.this).getChatDao().insertChat(chat);
+
             }
         });
     }

@@ -26,4 +26,7 @@ public interface ChatDao {
     @Query("SELECT * FROM chats where sent_to_server=0")
     List<Chat> getAllUnsentChats();
 
+    @Query("SELECT * FROM chats where sent_to_server=1 and pk= :pk")
+    List<Chat> getChatStatus(long pk);
+
 }
