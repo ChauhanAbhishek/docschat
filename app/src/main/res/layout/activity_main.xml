@@ -7,18 +7,39 @@
     tools:context=".MainActivity">
 
     <android.support.v7.widget.RecyclerView
-        android:id="@+id/chat_list"
+        android:id="@+id/chat_recyclerView"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_above="@id/edit_text"
         >
     </android.support.v7.widget.RecyclerView>
 
+    <TextView
+        android:id="@+id/send_button"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:clickable="true"
+        android:layout_marginRight="16dp"
+        android:layout_marginLeft="8dp"
+        android:layout_gravity="center"
+        android:text="POST"
+        android:layout_alignTop="@id/edit_text"
+        android:textColor="@color/colorPrimary"
+        android:layout_alignParentBottom="true"
+        android:layout_alignParentRight="true"
+        />
+
     <EditText
         android:id="@+id/edit_text"
         android:layout_width="match_parent"
-        android:hint="Say hi"
+        android:layout_height="wrap_content"
+        android:layout_alignParentEnd="true"
         android:layout_alignParentBottom="true"
-        android:layout_height="wrap_content" />
+        android:layout_marginEnd="64dp"
+        android:layout_marginRight="64dp"
+        android:hint="Say hi" />
+
+
+
 
 </RelativeLayout>

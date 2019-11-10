@@ -14,18 +14,20 @@ public class ChatAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
     List<ChatItem> chatList = new ArrayList<>();
 
     public static class MineChatViewHolder extends RecyclerView.ViewHolder {
-        TextView text1;
+        TextView chatText;
 
         public MineChatViewHolder(View itemView) {
             super(itemView);
+            chatText = itemView.findViewById(R.id.chatText);
         }
     }
 
     public static class OthersChatViewHolder extends RecyclerView.ViewHolder {
-        TextView text1;
+        TextView chatText;
 
         public OthersChatViewHolder(View itemView) {
             super(itemView);
+            chatText = itemView.findViewById(R.id.chatText);
         }
     }
 
