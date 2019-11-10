@@ -33,17 +33,19 @@ import com.example.myapplication.db.ChatDatabase;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.Executor;
 import java.util.concurrent.Executors;
 
-public class MainActivity extends AppCompatActivity {
+public class MainActivity extends AppCompatActivity implements ChatAdapter.ChatAdapterCallback {
 
 
-    //List<ChatItem> chatItemList = new ArrayList<>();
+    List<Chat> chatItemList = new ArrayList<>();
     ChatAdapter chatAdapter ;
     EditText editText;
     private Executor mDiskIO;
+    RecyclerView chatRecyclerView;
 
 
     @Override
@@ -58,12 +60,12 @@ public class MainActivity extends AppCompatActivity {
         }
 
 
-        RecyclerView chatRecyclerView = findViewById(R.id.chat_recyclerView);
+         chatRecyclerView = findViewById(R.id.chat_recyclerView);
         editText = findViewById(R.id.edit_text);
         TextView sendText = findViewById(R.id.send_button);
 
         chatRecyclerView.setLayoutManager(new LinearLayoutManager(this));
-        chatAdapter = new ChatAdapter();
+        chatAdapter = new ChatAdapter(this);
         chatRecyclerView.setAdapter(chatAdapter);
 
 
@@ -76,13 +78,22 @@ public class MainActivity extends AppCompatActivity {
 
 
         });
-
-
         mDiskIO = Executors.newSingleThreadExecutor();
-
-
         subscribeObserver();
+        sendAnyUnSentMessages();
 
+    }
+
+    @Override
+    public void scrollToBottom() {
+        Log.d("cnrr","scroll to " + (chatItemList.size()-1));
+        chatRecyclerView.scrollToPosition(chatItemList.size()-1);
+    }
+
+    public void sendAnyUnSentMessages()
+    {
+        Intent serviceIntent = new Intent(MainActivity.this, ChatJobIntentService.class);
+        ChatJobIntentService.enqueueWork(MainActivity.this,serviceIntent,123);
     }
 
     public void subscribeObserver()
@@ -91,7 +102,7 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onChanged(List<Chat> chats) {
                 if(chats!=null)
-                {
+                {                    chatItemList =chats;
                     chatAdapter.setChatList(chats);
                 }
             }
@@ -175,15 +186,13 @@ public class MainActivity extends AppCompatActivity {
         public void onReceive(Context context, Intent intent) {
             ConnectivityManager manager = (ConnectivityManager) context.getSystemService(Context.CONNECTIVITY_SERVICE);
             NetworkInfo networkInfo = manager.getActiveNetworkInfo();
-            Intent serviceIntent = new Intent(MainActivity.this, ChatJobIntentService.class);
 
             Log.d("cnrr",networkInfo + "hi");
 
             if(networkInfo!=null&&networkInfo.isConnected())
             {
                 Log.d("cnrr","enqueue work");
-
-                ChatJobIntentService.enqueueWork(MainActivity.this,serviceIntent,123);
+                sendAnyUnSentMessages();
 
             }
         }

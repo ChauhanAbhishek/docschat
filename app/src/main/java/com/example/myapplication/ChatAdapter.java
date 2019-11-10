@@ -13,9 +13,16 @@ import com.example.myapplication.db.Chat;
 import java.util.ArrayList;
 import java.util.List;
 
+import javax.security.auth.callback.Callback;
+
 public class ChatAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
 
     List<Chat> chatList = new ArrayList<>();
+    ChatAdapterCallback callback;
+
+    public ChatAdapter(ChatAdapterCallback callback) {
+        this.callback = callback;
+    }
 
     public static class MineChatViewHolder extends RecyclerView.ViewHolder {
         TextView chatText;
@@ -101,5 +108,12 @@ public class ChatAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
     {
         this.chatList = chatList;
         notifyDataSetChanged();
+        callback.scrollToBottom();
+
+    }
+
+    public interface ChatAdapterCallback
+    {
+       public void  scrollToBottom();
     }
 }
