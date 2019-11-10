@@ -12,21 +12,24 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.Toolbar;
+import androidx.lifecycle.Observer;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.androidnetworking.AndroidNetworking;
 import com.androidnetworking.common.Priority;
 import com.androidnetworking.error.ANError;
-import com.androidnetworking.interfaces.JSONArrayRequestListener;
 import com.androidnetworking.interfaces.JSONObjectRequestListener;
+import com.example.myapplication.db.Chat;
+import com.example.myapplication.db.ChatDatabase;
 
-import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.Executor;
+import java.util.concurrent.Executors;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -34,11 +37,20 @@ public class MainActivity extends AppCompatActivity {
     //List<ChatItem> chatItemList = new ArrayList<>();
     ChatAdapter chatAdapter ;
     EditText editText;
+    private Executor mDiskIO;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
+
+
+        if (getSupportActionBar() != null) {
+            getSupportActionBar().setTitle("Your Chats");
+        }
+
 
         RecyclerView chatRecyclerView = findViewById(R.id.chat_recyclerView);
         editText = findViewById(R.id.edit_text);
@@ -60,7 +72,26 @@ public class MainActivity extends AppCompatActivity {
         });
 
 
+        mDiskIO = Executors.newSingleThreadExecutor();
+
+
+        subscribeObserver();
+
     }
+
+    public void subscribeObserver()
+    {
+        ChatDatabase.getInstance(this).getChatDao().getAllChats().observe(this, new Observer<List<Chat>>() {
+            @Override
+            public void onChanged(List<Chat> chats) {
+                if(chats!=null)
+                {
+                    chatAdapter.setChatList(chats);
+                }
+            }
+        });
+    }
+
 
     public  void hideKeyboard() {
         InputMethodManager imm = (InputMethodManager) getSystemService(Activity.INPUT_METHOD_SERVICE);
@@ -84,15 +115,28 @@ public class MainActivity extends AppCompatActivity {
                 .build()
                 .getAsJSONObject(new JSONObjectRequestListener() {
                     @Override
-                    public void onResponse(JSONObject response) {
+                    public void onResponse( JSONObject response) {
                         // do anything with response
                         try
                         {
                             Log.d("cnrr",response.toString());
+
+                            final String reply = response.getJSONObject("message").getString("message");
                             if(response.getInt("success")==1)
                             {
-                                chatAdapter.appendChats(new ChatItem(message,ChatItem.MINE));
-                                chatAdapter.appendChats(new ChatItem( response.getJSONObject("message").getString("message"),ChatItem.OTHERS));
+                               // chatAdapter.appendChats(new Chat(message, Chat.MINE,true, (int)(System.currentTimeMillis() / 1000) ));
+                             //   chatAdapter.appendChats(new Chat( response.getJSONObject("message").getString("message"), Chat.OTHERS,true, (int)(System.currentTimeMillis() / 1000) ));
+
+                                mDiskIO.execute(new Runnable() {
+                                    @Override
+                                    public void run() {
+                                        ChatDatabase.getInstance(MainActivity.this).getChatDao().insertChat(new Chat(message, Chat.MINE,true, (int)(System.currentTimeMillis() / 1000) ));
+                                        ChatDatabase.getInstance(MainActivity.this).getChatDao().insertChat(new Chat(reply  , Chat.OTHERS,true, (int)(System.currentTimeMillis() / 1000) ));
+
+                                    }
+                                });
+
+
                                 editText.setText("");
 
                             }

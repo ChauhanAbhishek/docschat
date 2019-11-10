@@ -7,12 +7,14 @@ import android.widget.TextView;
 
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.example.myapplication.db.Chat;
+
 import java.util.ArrayList;
 import java.util.List;
 
 public class ChatAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
 
-    List<ChatItem> chatList = new ArrayList<>();
+    List<Chat> chatList = new ArrayList<>();
 
     public static class MineChatViewHolder extends RecyclerView.ViewHolder {
         TextView chatText;
@@ -34,7 +36,7 @@ public class ChatAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
 
     @Override
     public RecyclerView.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-        if(viewType==ChatItem.MINE)
+        if(viewType== Chat.MINE)
         {
             View p = LayoutInflater.from(parent.getContext())
                     .inflate(R.layout.chat_item_row_mine, parent, false);
@@ -56,27 +58,27 @@ public class ChatAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
 
     @Override
     public int getItemViewType(int position) {
-        return chatList.get(position).type;
+        return chatList.get(position).getType();
     }
 
     @Override
     public void onBindViewHolder(final RecyclerView.ViewHolder holder, final int position) {
 
-        if(chatList.get(position).type==ChatItem.MINE)
+        if(chatList.get(position).getType()== Chat.MINE)
         {
-            ((MineChatViewHolder)holder).chatText.setText(chatList.get(position).text);
+            ((MineChatViewHolder)holder).chatText.setText(chatList.get(position).getText());
         }
-        else if(chatList.get(position).type==ChatItem.OTHERS)
+        else if(chatList.get(position).getType()== Chat.OTHERS)
         {
-            ((OthersChatViewHolder)holder).chatText.setText(chatList.get(position).text);
+            ((OthersChatViewHolder)holder).chatText.setText(chatList.get(position).getText());
         }
 
 
     }
 
-    public void appendChats(ChatItem chatItem)
+    public void setChatList(List<Chat> chatList)
     {
-        this.chatList.add(chatItem);
+        this.chatList = chatList;
         notifyDataSetChanged();
     }
 }
