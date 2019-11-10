@@ -61,11 +61,21 @@ public class ChatAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
     @Override
     public void onBindViewHolder(final RecyclerView.ViewHolder holder, final int position) {
 
+        if(chatList.get(position).type==ChatItem.MINE)
+        {
+            ((MineChatViewHolder)holder).chatText.setText(chatList.get(position).text);
+        }
+        else if(chatList.get(position).type==ChatItem.OTHERS)
+        {
+            ((OthersChatViewHolder)holder).chatText.setText(chatList.get(position).text);
+        }
+
+
     }
 
-    public void appendChats(List<ChatItem> chatList)
+    public void appendChats(ChatItem chatItem)
     {
-        this.chatList.addAll(chatList);
+        this.chatList.add(chatItem);
         notifyDataSetChanged();
     }
 }

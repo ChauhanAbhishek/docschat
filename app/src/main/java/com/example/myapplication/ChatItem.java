@@ -9,6 +9,11 @@ public class ChatItem {
     String text;
     int type;
 
+    public ChatItem(String text, int type) {
+        this.text = text;
+        this.type = type;
+    }
+
     public String getText() {
         return text;
     }
