@@ -1,5 +1,6 @@
 package com.example.myapplication;
 
+import android.graphics.Color;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -64,14 +65,34 @@ public class ChatAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
     @Override
     public void onBindViewHolder(final RecyclerView.ViewHolder holder, final int position) {
 
-        if(chatList.get(position).getType()== Chat.MINE)
+        Chat chat = chatList.get(position);
+
+        if(chat.getType()== Chat.MINE)
         {
             ((MineChatViewHolder)holder).chatText.setText(chatList.get(position).getText());
+            if(!chat.isSentToServer())
+            {
+                ((MineChatViewHolder)holder).chatText.setTextColor(Color.parseColor("#ff0000"));
+            }
+            else
+            {
+                ((MineChatViewHolder)holder).chatText.setTextColor(Color.parseColor("#000000"));
+            }
         }
-        else if(chatList.get(position).getType()== Chat.OTHERS)
+        else if(chat.getType()== Chat.OTHERS)
         {
             ((OthersChatViewHolder)holder).chatText.setText(chatList.get(position).getText());
+
+            if(!chat.isSentToServer())
+            {
+                ((OthersChatViewHolder)holder).chatText.setTextColor(Color.parseColor("#ff0000"));
+            }
+            else
+            {
+                ((OthersChatViewHolder)holder).chatText.setTextColor(Color.parseColor("#000000"));
+            }
         }
+
 
 
     }
