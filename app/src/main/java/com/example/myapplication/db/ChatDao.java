@@ -23,4 +23,7 @@ public interface ChatDao {
     @Query("SELECT * FROM chats where pk>0 order by timestamp ASC")
     LiveData<List<Chat>> getAllChats();
 
+//    @Query("SELECT * FROM chats where sent_to_server=")
+//    LiveData<List<Chat>> getAllChats();
+
 }

@@ -23,12 +23,12 @@ public class Chat {
     int type;
 
     @ColumnInfo(name = "sent_to_server")
-    boolean sentToServer;
+    int sentToServer;
 
     @ColumnInfo(name = "timestamp")
     int timeStamp;
 
-    public Chat(String text, int type, boolean sentToServer, int timeStamp) {
+    public Chat(String text, int type, int sentToServer, int timeStamp) {
         this.text = text;
         this.type = type;
         this.sentToServer = sentToServer;
@@ -51,11 +51,11 @@ public class Chat {
         this.type = type;
     }
 
-    public boolean isSentToServer() {
+    public int isSentToServer() {
         return sentToServer;
     }
 
-    public void setSentToServer(boolean sentToServer) {
+    public void setSentToServer(int sentToServer) {
         this.sentToServer = sentToServer;
     }
 

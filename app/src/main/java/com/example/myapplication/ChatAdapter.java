@@ -70,7 +70,7 @@ public class ChatAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
         if(chat.getType()== Chat.MINE)
         {
             ((MineChatViewHolder)holder).chatText.setText(chatList.get(position).getText());
-            if(!chat.isSentToServer())
+            if(chat.isSentToServer()==0)
             {
                 ((MineChatViewHolder)holder).chatText.setTextColor(Color.parseColor("#ff0000"));
             }
@@ -83,7 +83,7 @@ public class ChatAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
         {
             ((OthersChatViewHolder)holder).chatText.setText(chatList.get(position).getText());
 
-            if(!chat.isSentToServer())
+            if(chat.isSentToServer()==0)
             {
                 ((OthersChatViewHolder)holder).chatText.setTextColor(Color.parseColor("#ff0000"));
             }

@@ -127,8 +127,8 @@ public class MainActivity extends AppCompatActivity {
                                // chatAdapter.appendChats(new Chat(message, Chat.MINE,true, (int)(System.currentTimeMillis() / 1000) ));
                              //   chatAdapter.appendChats(new Chat( response.getJSONObject("message").getString("message"), Chat.OTHERS,true, (int)(System.currentTimeMillis() / 1000) ));
 
-                                saveChat(new Chat(message, Chat.MINE,true, (int)(System.currentTimeMillis() / 1000) ));
-                                saveChat(new Chat(reply  , Chat.OTHERS,true, (int)(System.currentTimeMillis() / 1000) ));
+                                saveChat(new Chat(message, Chat.MINE,1, (int)(System.currentTimeMillis() / 1000) ));
+                                saveChat(new Chat(reply  , Chat.OTHERS,1, (int)(System.currentTimeMillis() / 1000) ));
 
                                 editText.setText("");
 
@@ -136,7 +136,7 @@ public class MainActivity extends AppCompatActivity {
                         }
                         catch (JSONException e)
                         {
-                           saveChat(new Chat(message, Chat.MINE,false, (int)(System.currentTimeMillis() / 1000) ));
+                           saveChat(new Chat(message, Chat.MINE,0, (int)(System.currentTimeMillis() / 1000) ));
                             editText.setText("");
 
                         }
@@ -145,7 +145,7 @@ public class MainActivity extends AppCompatActivity {
                     public void onError(ANError error) {
                         // handle error
                         Toast.makeText(MainActivity.this,"Connection error",Toast.LENGTH_SHORT).show();
-                        saveChat(new Chat(message, Chat.MINE,false, (int)(System.currentTimeMillis() / 1000) ));
+                        saveChat(new Chat(message, Chat.MINE,0, (int)(System.currentTimeMillis() / 1000) ));
                         editText.setText("");
 
                     }
