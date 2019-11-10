@@ -17,13 +17,13 @@ public interface ChatDao {
     @Insert(onConflict = IGNORE)
     long insertChat(Chat chat);
 
-//    @Query("UPDATE drafts SET text = :text,updated_on = :updatedOn, is_dirty = :dirty  where pk = :pk")
-//    Single<Integer> updateDraft(long pk,String text, int updatedOn,int dirty);
+    @Query("UPDATE chats SET sent_to_server = 1  where pk = :pk")
+    int updateChatAsSent(long pk);
 
     @Query("SELECT * FROM chats where pk>0 order by timestamp ASC")
     LiveData<List<Chat>> getAllChats();
 
-//    @Query("SELECT * FROM chats where sent_to_server=")
-//    LiveData<List<Chat>> getAllChats();
+    @Query("SELECT * FROM chats where sent_to_server=0")
+    List<Chat> getAllUnsentChats();
 
 }

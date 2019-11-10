@@ -83,14 +83,14 @@ public class ChatAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
         {
             ((OthersChatViewHolder)holder).chatText.setText(chatList.get(position).getText());
 
-            if(chat.isSentToServer()==0)
-            {
-                ((OthersChatViewHolder)holder).chatText.setTextColor(Color.parseColor("#ff0000"));
-            }
-            else
-            {
-                ((OthersChatViewHolder)holder).chatText.setTextColor(Color.parseColor("#000000"));
-            }
+//            if(chat.isSentToServer()==0)
+//            {
+//                ((OthersChatViewHolder)holder).chatText.setTextColor(Color.parseColor("#ff0000"));
+//            }
+//            else
+//            {
+//                ((OthersChatViewHolder)holder).chatText.setTextColor(Color.parseColor("#000000"));
+//            }
         }
 
 
